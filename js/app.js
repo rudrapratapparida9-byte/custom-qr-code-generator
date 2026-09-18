@@ -1,7 +1,7 @@
 /**
- * Custom QR Code Generator & Document Scanner Engine
- * Real-time PNG, SVG, Vector rendering with GSTIN, Phone, UPI, Wi-Fi, vCard support
- * In-browser Photo, Multi-page PDF Document & Live Camera QR Decoding
+ * Custom QR Code Generator Engine
+ * Generates instant QR codes from uploaded Photos/Images, PDF Documents,
+ * GSTIN Invoices, UPI Payments, Phone/WhatsApp, Wi-Fi, vCard & Plain Text.
  */
 
 (function () {
@@ -11,15 +11,13 @@
   // STATE MANAGEMENT
   // ==========================================
   let qrCode = null;
-  let currentMode = 'url';
-  let currentScanMode = 'upload';
+  let currentMode = 'image';
   let uploadedLogoUrl = null;
-  let html5QrScanner = null;
-  let isCameraScanning = false;
-  let currentScannedData = '';
+  let uploadedImageDataUrl = null;
+  let uploadedDocDataUrl = null;
 
   const config = {
-    data: 'https://smartcalcpro.online',
+    data: 'https://smartcalcpro.online/photo-viewer',
     width: 320,
     height: 320,
     qrColor: '#0F172A',
@@ -29,25 +27,35 @@
     errorCorrectionLevel: 'Q'
   };
 
-  // Configure PDF.js Worker
-  if (window.pdfjsLib) {
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  }
+  // Sample placeholder for initial image QR code
+  const DEFAULT_IMAGE_PAYLOAD = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%234f46e5"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="sans-serif" font-size="20">Photo QR</text></svg>';
+  const DEFAULT_DOC_PAYLOAD = 'data:application/pdf;base64,JVBERi0xLjcKCjEgMCBvYmogICU...';
 
   // ==========================================
   // DOM ELEMENTS
   // ==========================================
-  // Main Navigation Switcher
-  const tabGenerate = document.getElementById('tabGenerate');
-  const tabScan = document.getElementById('tabScan');
-  const sectionGenerator = document.getElementById('section-generator');
-  const sectionScanner = document.getElementById('section-scanner');
-
-  // Generator Elements
   const qrCodeWrapper = document.getElementById('qrCodeWrapper');
   const typeBtns = document.querySelectorAll('.type-btn');
   const modeFields = document.querySelectorAll('.mode-fields');
 
+  // Image Mode Elements
+  const imgModeDropZone = document.getElementById('imgModeDropZone');
+  const imageFileInput = document.getElementById('imageFileInput');
+  const imgPreviewCard = document.getElementById('imgPreviewCard');
+  const imgThumbnail = document.getElementById('imgThumbnail');
+  const imgFileName = document.getElementById('imgFileName');
+  const imgFileSize = document.getElementById('imgFileSize');
+  const removeImgFileBtn = document.getElementById('removeImgFileBtn');
+
+  // Document Mode Elements
+  const docModeDropZone = document.getElementById('docModeDropZone');
+  const docFileInput = document.getElementById('docFileInput');
+  const docPreviewCard = document.getElementById('docPreviewCard');
+  const docFileName = document.getElementById('docFileName');
+  const docFileSize = document.getElementById('docFileSize');
+  const removeDocFileBtn = document.getElementById('removeDocFileBtn');
+
+  // Colors & Customizations
   const qrColorPicker = document.getElementById('qrColorPicker');
   const qrColorHex = document.getElementById('qrColorHex');
   const bgColorPicker = document.getElementById('bgColorPicker');
@@ -58,26 +66,10 @@
   const logoUpload = document.getElementById('logoUpload');
   const removeLogoBtn = document.getElementById('removeLogoBtn');
 
+  // Actions
   const downloadPngBtn = document.getElementById('downloadPngBtn');
   const downloadSvgBtn = document.getElementById('downloadSvgBtn');
   const copyQrBtn = document.getElementById('copyQrBtn');
-
-  // Scanner Elements
-  const scanTabBtns = document.querySelectorAll('.scan-tab-btn');
-  const scanViews = document.querySelectorAll('.scan-view');
-  const photoDropZone = document.getElementById('photoDropZone');
-  const scanPhotoInput = document.getElementById('scanPhotoInput');
-  const pdfDropZone = document.getElementById('pdfDropZone');
-  const scanPdfInput = document.getElementById('scanPdfInput');
-  const startCameraBtn = document.getElementById('startCameraBtn');
-  const stopCameraBtn = document.getElementById('stopCameraBtn');
-
-  const scanTypeBadge = document.getElementById('scanTypeBadge');
-  const scannedTextOutput = document.getElementById('scannedTextOutput');
-  const scanActionsBar = document.getElementById('scanActionsBar');
-  const openScannedLinkBtn = document.getElementById('openScannedLinkBtn');
-  const copyScannedTextBtn = document.getElementById('copyScannedTextBtn');
-  const clearScanBtn = document.getElementById('clearScanBtn');
 
   const themeToggleBtn = document.getElementById('themeToggleBtn');
   const toast = document.getElementById('toast');
@@ -86,45 +78,25 @@
   // INITIALIZATION
   // ==========================================
   document.addEventListener('DOMContentLoaded', () => {
-    setupMainToolTabs();
     setupTypeSelector();
+    setupImageUpload();
+    setupDocumentUpload();
     setupColorPickers();
     setupEventListeners();
     setupTheme();
-    setupScannerModules();
     initQrEngine();
   });
 
   // ==========================================
-  // 1. TOOL SWITCHER (GENERATOR VS SCANNER)
-  // ==========================================
-  function setupMainToolTabs() {
-    if (!tabGenerate || !tabScan) return;
-
-    tabGenerate.addEventListener('click', () => {
-      tabGenerate.classList.add('active');
-      tabScan.classList.remove('active');
-      sectionGenerator.style.display = 'block';
-      sectionScanner.style.display = 'none';
-      stopCamera();
-    });
-
-    tabScan.addEventListener('click', () => {
-      tabScan.classList.add('active');
-      tabGenerate.classList.remove('active');
-      sectionScanner.style.display = 'block';
-      sectionGenerator.style.display = 'none';
-    });
-  }
-
-  // ==========================================
-  // 2. QR ENGINE & GENERATOR LOGIC
+  // 1. QR ENGINE LOGIC
   // ==========================================
   function initQrEngine() {
     if (typeof QRCodeStyling === 'undefined') {
       setTimeout(initQrEngine, 150);
       return;
     }
+
+    config.data = generatePayloadData();
 
     qrCode = new QRCodeStyling({
       width: config.width,
@@ -189,19 +161,17 @@
 
   function generatePayloadData() {
     switch (currentMode) {
+      case 'image': {
+        return uploadedImageDataUrl || DEFAULT_IMAGE_PAYLOAD;
+      }
+
+      case 'document': {
+        return uploadedDocDataUrl || 'https://smartcalcpro.online/sample-document.pdf';
+      }
+
       case 'url': {
         const url = document.getElementById('urlInput')?.value.trim();
         return url || 'https://smartcalcpro.online';
-      }
-
-      case 'phone': {
-        const phone = document.getElementById('phoneInput')?.value.trim();
-        const action = document.querySelector('input[name="phoneAction"]:checked')?.value || 'tel';
-        if (!phone) return 'tel:+1234567890';
-        const cleanPhone = phone.replace(/[^0-9+]/g, '');
-        if (action === 'wa') return `https://wa.me/${cleanPhone.replace('+', '')}`;
-        if (action === 'sms') return `SMSTO:${cleanPhone}:Hello`;
-        return `tel:${cleanPhone}`;
       }
 
       case 'gstin': {
@@ -225,6 +195,16 @@
         return upi;
       }
 
+      case 'phone': {
+        const phone = document.getElementById('phoneInput')?.value.trim();
+        const action = document.querySelector('input[name="phoneAction"]:checked')?.value || 'tel';
+        if (!phone) return 'tel:+919876543210';
+        const cleanPhone = phone.replace(/[^0-9+]/g, '');
+        if (action === 'wa') return `https://wa.me/${cleanPhone.replace('+', '')}`;
+        if (action === 'sms') return `SMSTO:${cleanPhone}:Hello`;
+        return `tel:${cleanPhone}`;
+      }
+
       case 'wifi': {
         const ssid = document.getElementById('wifiSsid')?.value.trim();
         const pass = document.getElementById('wifiPass')?.value || '';
@@ -242,7 +222,7 @@
       }
 
       case 'text': {
-        return document.getElementById('textInput')?.value.trim() || 'Sample Text';
+        return document.getElementById('textInput')?.value.trim() || 'Sample Text / Serial Number';
       }
 
       default:
@@ -250,6 +230,9 @@
     }
   }
 
+  // ==========================================
+  // 2. CATEGORY MODE SELECTOR
+  // ==========================================
   function setupTypeSelector() {
     typeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -266,6 +249,160 @@
     });
   }
 
+  // ==========================================
+  // 3. IMAGE / PHOTO UPLOAD TO QR
+  // ==========================================
+  function setupImageUpload() {
+    if (!imgModeDropZone || !imageFileInput) return;
+
+    ['dragenter', 'dragover'].forEach(name => {
+      imgModeDropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        imgModeDropZone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      imgModeDropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        imgModeDropZone.classList.remove('dragover');
+      });
+    });
+
+    imgModeDropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith('image/')) {
+        handleImageFile(files[0]);
+      } else {
+        showToast('Please drop a valid image file (JPG, PNG, WebP)');
+      }
+    });
+
+    imageFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleImageFile(e.target.files[0]);
+      }
+    });
+
+    removeImgFileBtn?.addEventListener('click', () => {
+      uploadedImageDataUrl = null;
+      imageFileInput.value = '';
+      imgPreviewCard.style.display = 'none';
+      imgModeDropZone.style.display = 'flex';
+      updateQrCode();
+      showToast('Image removed');
+    });
+  }
+
+  function handleImageFile(file) {
+    showToast('Processing photo for QR generation...');
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // Optimize image size to fit nicely in QR data uri
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const maxDim = 320;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        uploadedImageDataUrl = canvas.toDataURL('image/jpeg', 0.65);
+
+        // Update UI Preview Card
+        imgThumbnail.src = uploadedImageDataUrl;
+        imgFileName.textContent = file.name;
+        imgFileSize.textContent = formatBytes(file.size);
+        imgPreviewCard.style.display = 'flex';
+        imgModeDropZone.style.display = 'none';
+
+        updateQrCode();
+        showToast('QR Code generated for Photo!');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ==========================================
+  // 4. DOCUMENT / PDF UPLOAD TO QR
+  // ==========================================
+  function setupDocumentUpload() {
+    if (!docModeDropZone || !docFileInput) return;
+
+    ['dragenter', 'dragover'].forEach(name => {
+      docModeDropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        docModeDropZone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(name => {
+      docModeDropZone.addEventListener(name, (e) => {
+        e.preventDefault();
+        docModeDropZone.classList.remove('dragover');
+      });
+    });
+
+    docModeDropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleDocumentFile(files[0]);
+      }
+    });
+
+    docFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleDocumentFile(e.target.files[0]);
+      }
+    });
+
+    removeDocFileBtn?.addEventListener('click', () => {
+      uploadedDocDataUrl = null;
+      docFileInput.value = '';
+      docPreviewCard.style.display = 'none';
+      docModeDropZone.style.display = 'flex';
+      updateQrCode();
+      showToast('Document removed');
+    });
+  }
+
+  function handleDocumentFile(file) {
+    showToast('Encoding document for QR code...');
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      uploadedDocDataUrl = e.target.result;
+
+      docFileName.textContent = file.name;
+      docFileSize.textContent = formatBytes(file.size);
+      docPreviewCard.style.display = 'flex';
+      docModeDropZone.style.display = 'none';
+
+      updateQrCode();
+      showToast('QR Code generated for Document!');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ==========================================
+  // 5. COLORS, CUSTOMIZATIONS & EVENTS
+  // ==========================================
   function setupColorPickers() {
     // QR Color
     qrColorPicker?.addEventListener('input', () => {
@@ -299,19 +436,16 @@
   }
 
   function setupEventListeners() {
-    // Listen to all inputs and textareas in config column
     const inputs = document.querySelectorAll('.config-column input, .config-column textarea, .config-column select');
     inputs.forEach(input => {
       input.addEventListener('input', updateQrCode);
       input.addEventListener('change', updateQrCode);
     });
 
-    // Radio buttons for phone actions
     document.querySelectorAll('input[name="phoneAction"]').forEach(radio => {
       radio.addEventListener('change', updateQrCode);
     });
 
-    // Styling selects
     dotStyleSelect?.addEventListener('change', () => {
       config.dotType = dotStyleSelect.value;
       updateQrCode();
@@ -322,14 +456,13 @@
       updateQrCode();
     });
 
-    // Logo Upload
     logoUpload?.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         uploadedLogoUrl = URL.createObjectURL(file);
         if (removeLogoBtn) removeLogoBtn.style.display = 'inline-block';
         updateQrCode();
-        showToast('Logo attached to QR code!');
+        showToast('Logo centered on QR code!');
       }
     });
 
@@ -338,10 +471,9 @@
       if (logoUpload) logoUpload.value = '';
       removeLogoBtn.style.display = 'none';
       updateQrCode();
-      showToast('Logo removed');
+      showToast('Center logo removed');
     });
 
-    // Download & Clipboard Actions
     downloadPngBtn?.addEventListener('click', () => downloadQR('png'));
     downloadSvgBtn?.addEventListener('click', () => downloadQR('svg'));
     copyQrBtn?.addEventListener('click', copyQrToClipboard);
@@ -350,7 +482,7 @@
   async function downloadQR(ext) {
     if (!qrCode) return;
     const res = parseInt(resolutionSelect?.value || '512', 10);
-    showToast(`Generating ${res}x${res} ${ext.toUpperCase()} file...`);
+    showToast(`Generating ${res}x${res} ${ext.toUpperCase()} QR image...`);
 
     const tempQr = new QRCodeStyling({
       width: res,
@@ -383,7 +515,7 @@
     });
 
     await tempQr.download({
-      name: `custom-qr-code-${Date.now()}`,
+      name: `custom-qr-${currentMode}-${Date.now()}`,
       extension: ext
     });
 
@@ -413,303 +545,14 @@
     }
   }
 
-  // ==========================================
-  // 3. DOCUMENT & PHOTO SCANNER MODULES
-  // ==========================================
-  function setupScannerModules() {
-    // Mode switcher (Photo vs PDF vs Camera)
-    scanTabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        scanTabBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentScanMode = btn.dataset.scanmode;
-
-        scanViews.forEach(v => {
-          v.classList.toggle('active', v.id === `scan-view-${currentScanMode}`);
-        });
-
-        if (currentScanMode !== 'camera') {
-          stopCamera();
-        }
-      });
-    });
-
-    // 1. Photo Drag-and-Drop & File Input
-    if (photoDropZone && scanPhotoInput) {
-      ['dragenter', 'dragover'].forEach(eventName => {
-        photoDropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          photoDropZone.classList.add('dragover');
-        });
-      });
-
-      ['dragleave', 'drop'].forEach(eventName => {
-        photoDropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          photoDropZone.classList.remove('dragover');
-        });
-      });
-
-      photoDropZone.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type.startsWith('image/')) {
-          scanImageFile(files[0]);
-        } else {
-          showToast('Please drop a valid image file');
-        }
-      });
-
-      scanPhotoInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-          scanImageFile(e.target.files[0]);
-        }
-      });
-
-      // Paste image support (Ctrl+V)
-      window.addEventListener('paste', (e) => {
-        if (sectionScanner.style.display !== 'none' && currentScanMode === 'upload') {
-          const items = e.clipboardData?.items;
-          if (items) {
-            for (let i = 0; i < items.length; i++) {
-              if (items[i].type.indexOf('image') !== -1) {
-                const blob = items[i].getAsFile();
-                scanImageFile(blob);
-                break;
-              }
-            }
-          }
-        }
-      });
-    }
-
-    // 2. PDF Drag-and-Drop & File Input
-    if (pdfDropZone && scanPdfInput) {
-      ['dragenter', 'dragover'].forEach(eventName => {
-        pdfDropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          pdfDropZone.classList.add('dragover');
-        });
-      });
-
-      ['dragleave', 'drop'].forEach(eventName => {
-        pdfDropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          pdfDropZone.classList.remove('dragover');
-        });
-      });
-
-      pdfDropZone.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type === 'application/pdf') {
-          scanPdfFile(files[0]);
-        } else {
-          showToast('Please drop a valid PDF document');
-        }
-      });
-
-      scanPdfInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-          scanPdfFile(e.target.files[0]);
-        }
-      });
-    }
-
-    // 3. Live Camera Controls
-    startCameraBtn?.addEventListener('click', startCamera);
-    stopCameraBtn?.addEventListener('click', stopCamera);
-
-    // 4. Scanned Result Action Buttons
-    copyScannedTextBtn?.addEventListener('click', () => {
-      if (!currentScannedData) return;
-      navigator.clipboard.writeText(currentScannedData).then(() => {
-        showToast('Decoded text copied to clipboard!');
-      });
-    });
-
-    openScannedLinkBtn?.addEventListener('click', () => {
-      if (currentScannedData && (currentScannedData.startsWith('http://') || currentScannedData.startsWith('https://'))) {
-        window.open(currentScannedData, '_blank', 'noopener,noreferrer');
-      }
-    });
-
-    clearScanBtn?.addEventListener('click', () => {
-      currentScannedData = '';
-      scannedTextOutput.innerHTML = '<span class="placeholder-text">Upload a photo, PDF document, or start camera to scan QR code content...</span>';
-      scanTypeBadge.className = 'scan-badge';
-      scanTypeBadge.textContent = 'Waiting for Scan...';
-      scanActionsBar.style.display = 'none';
-      openScannedLinkBtn.style.display = 'none';
-    });
+  function formatBytes(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   }
 
-  // --- Photo QR Scanning Engine ---
-  function scanImageFile(file) {
-    showToast('Analyzing image for QR code...');
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        let code = null;
-
-        if (window.jsQR) {
-          code = window.jsQR(imgData.data, imgData.width, imgData.height, {
-            inversionAttempts: 'attemptBoth'
-          });
-        }
-
-        if (code && code.data) {
-          displayScannedResult(code.data, 'Photo / Image Scan');
-          showToast('QR Code successfully decoded!');
-        } else {
-          showToast('No QR code detected in this photo. Please try a clearer image.');
-        }
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // --- PDF QR Scanning Engine ---
-  async function scanPdfFile(file) {
-    if (!window.pdfjsLib) {
-      showToast('PDF decoder is loading, please try again in a second...');
-      return;
-    }
-
-    showToast('Processing PDF pages for QR codes & invoices...');
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const numPages = pdf.numPages;
-      let foundCodes = [];
-
-      for (let pageNum = 1; pageNum <= Math.min(numPages, 15); pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 2.0 }); // High scale for crisp QR code detection
-
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext('2d');
-
-        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        if (window.jsQR) {
-          const code = window.jsQR(imgData.data, imgData.width, imgData.height, {
-            inversionAttempts: 'attemptBoth'
-          });
-
-          if (code && code.data) {
-            foundCodes.push(`[Page ${pageNum}]: ${code.data}`);
-          }
-        }
-      }
-
-      if (foundCodes.length > 0) {
-        displayScannedResult(foundCodes.join('\n\n'), `PDF Document (${foundCodes.length} QR Code(s) Found)`);
-        showToast(`Found ${foundCodes.length} QR code(s) in PDF!`);
-      } else {
-        showToast('No QR code detected in the uploaded PDF document pages.');
-      }
-    } catch (err) {
-      console.error(err);
-      showToast('Error reading PDF document.');
-    }
-  }
-
-  // --- Live Camera QR Scanner ---
-  function startCamera() {
-    if (typeof Html5Qrcode === 'undefined') {
-      showToast('Camera scanner library loading, please retry...');
-      return;
-    }
-
-    if (isCameraScanning) return;
-
-    html5QrScanner = new Html5Qrcode('reader');
-    const qrConfig = { fps: 15, qrbox: { width: 260, height: 260 } };
-
-    html5QrScanner.start(
-      { facingMode: 'environment' },
-      qrConfig,
-      (decodedText) => {
-        displayScannedResult(decodedText, 'Live Camera Scan');
-        showToast('QR Code detected!');
-        stopCamera();
-      },
-      () => {
-        // Continuous scan loop frame ignore
-      }
-    ).then(() => {
-      isCameraScanning = true;
-      if (startCameraBtn) startCameraBtn.style.display = 'none';
-      if (stopCameraBtn) stopCameraBtn.style.display = 'inline-flex';
-      showToast('Camera active. Point at a QR code.');
-    }).catch(err => {
-      console.error(err);
-      showToast('Camera access denied or camera not found.');
-    });
-  }
-
-  function stopCamera() {
-    if (html5QrScanner && isCameraScanning) {
-      html5QrScanner.stop().then(() => {
-        html5QrScanner.clear();
-        isCameraScanning = false;
-        if (startCameraBtn) startCameraBtn.style.display = 'inline-flex';
-        if (stopCameraBtn) stopCameraBtn.style.display = 'none';
-      }).catch(err => {
-        console.error(err);
-        isCameraScanning = false;
-      });
-    }
-  }
-
-  // --- Scanned Result Presenter ---
-  function displayScannedResult(data, sourceLabel) {
-    currentScannedData = data;
-    scannedTextOutput.textContent = data;
-
-    // Determine type
-    let badgeText = sourceLabel || 'Decoded';
-    if (data.startsWith('http://') || data.startsWith('https://')) {
-      badgeText = 'Website URL';
-      openScannedLinkBtn.style.display = 'inline-flex';
-    } else if (data.startsWith('GSTIN:') || /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}/.test(data)) {
-      badgeText = 'GSTIN / Invoice Data';
-      openScannedLinkBtn.style.display = 'none';
-    } else if (data.startsWith('upi://') || data.includes('pa=')) {
-      badgeText = 'UPI Payment';
-      openScannedLinkBtn.style.display = 'none';
-    } else if (data.startsWith('tel:') || data.startsWith('SMSTO:') || data.includes('wa.me/')) {
-      badgeText = 'Phone / Contact';
-      openScannedLinkBtn.style.display = 'none';
-    } else if (data.startsWith('WIFI:')) {
-      badgeText = 'Wi-Fi Credentials';
-      openScannedLinkBtn.style.display = 'none';
-    } else if (data.startsWith('BEGIN:VCARD')) {
-      badgeText = 'vCard Contact Card';
-      openScannedLinkBtn.style.display = 'none';
-    } else {
-      openScannedLinkBtn.style.display = 'none';
-    }
-
-    scanTypeBadge.className = 'scan-badge success';
-    scanTypeBadge.textContent = badgeText;
-    scanActionsBar.style.display = 'flex';
-  }
-
-  // ==========================================
-  // 4. UTILITIES & THEME
-  // ==========================================
   function showToast(msg) {
     if (!toast) return;
     toast.textContent = msg;

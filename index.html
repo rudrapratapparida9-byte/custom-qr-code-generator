@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Custom QR Code Generator &amp; Document Scanner – Photo, PDF, Camera &amp; GSTIN</title>
+  <title>Custom QR Code Generator – Upload Photo, PDF Document, GSTIN, UPI &amp; URL</title>
   
   <!-- SEO & Social Meta Tags -->
-  <meta name="description" content="Free high-resolution Custom QR Code Generator and Document Scanner. Scan QR codes from Photos, PDFs, and Live Camera. Generate QR for URLs, GSTIN, Phone, UPI, Wi-Fi & vCards.">
-  <meta name="keywords" content="qr code generator, qr scanner, scan qr from pdf, scan qr from photo, document qr scanner, gstin qr scanner, upi qr code, vector qr code">
+  <meta name="description" content="Free high-resolution Custom QR Code Generator. Upload photos, images, PDF documents, or enter URLs, GSTIN tax invoices, Phone, UPI, Wi-Fi & vCards to generate instant QR codes.">
+  <meta name="keywords" content="qr code generator, upload photo to qr code, upload pdf to qr code, document qr generator, image qr code, gstin qr generator, upi qr code, vector qr code">
   <meta name="author" content="QR Studio Pro">
   <meta name="theme-color" content="#4f46e5">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Custom QR Code Generator &amp; Document Scanner">
-  <meta property="og:description" content="Generate and scan QR codes from Photos, PDF documents, and live camera. 100% free and in-browser private.">
+  <meta property="og:title" content="Custom QR Code Generator – Photo, PDF &amp; Document QR">
+  <meta property="og:description" content="Upload images and documents to generate instant QR codes. 100% free and in-browser private.">
   <meta property="og:image" content="icons/icon-512.svg">
 
   <link rel="icon" type="image/svg+xml" href="icons/icon-512.svg">
@@ -28,15 +28,6 @@
 
   <!-- QR Code Styling Library -->
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
-
-  <!-- jsQR Scanner Engine for Photos & PDF Canvas -->
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-
-  <!-- PDF.js for PDF Document Scanning -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-  <!-- Html5-QRCode for Live Camera Stream -->
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <!-- Google AdSense Auto Ads Script -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6931746397574530" crossorigin="anonymous"></script>
@@ -53,8 +44,8 @@
             <i class="fa-solid fa-qrcode"></i>
           </div>
           <div>
-            <h1 class="brand-title">QR Studio &amp; Scanner</h1>
-            <span class="private-badge"><i class="fa-solid fa-bolt"></i> GENERATOR &amp; SCANNER</span>
+            <h1 class="brand-title">QR Studio Pro</h1>
+            <span class="private-badge"><i class="fa-solid fa-shield-halved"></i> 100% PRIVATE &bull; NO SERVER UPLOAD</span>
           </div>
         </a>
       </div>
@@ -92,37 +83,31 @@
       </div>
     </div>
 
-    <!-- Main Navigation Switch: Generator vs Scanner -->
-    <div class="main-tool-tabs">
-      <button type="button" id="tabGenerate" class="tool-switch-btn active">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>QR Code Generator</span>
-      </button>
-      <button type="button" id="tabScan" class="tool-switch-btn">
-        <i class="fa-solid fa-camera-rotate"></i> <span>Document &amp; Photo Scanner</span>
-      </button>
-    </div>
-
-    <!-- ==========================================
-         SECTION 1: QR CODE GENERATOR WORKSPACE
-         ========================================== -->
-    <section id="section-generator" class="app-card">
+    <!-- QR Code Generator Workspace Card -->
+    <section class="app-card">
       <p class="app-subtitle">
-        Generate stylish high-resolution QR codes for websites, plain text, Wi-Fi networks, phone numbers, GSTIN invoices, or contact cards.
+        Upload <strong>Photos, Images, PDF Documents</strong> or generate high-resolution QR codes for <strong>Websites, GSTIN Invoices, UPI, Wi-Fi &amp; Contacts</strong>.
       </p>
 
       <!-- Category Mode Selection Bar -->
       <div class="qr-type-selector">
-        <button type="button" class="type-btn active" data-type="url">
-          <i class="fa-solid fa-globe"></i> <span>URL / Link</span>
+        <button type="button" class="type-btn active" data-type="image">
+          <i class="fa-solid fa-image"></i> <span>Photo / Image</span>
         </button>
-        <button type="button" class="type-btn" data-type="phone">
-          <i class="fa-solid fa-phone"></i> <span>Phone &amp; Call</span>
+        <button type="button" class="type-btn" data-type="document">
+          <i class="fa-solid fa-file-pdf"></i> <span>PDF / Document</span>
+        </button>
+        <button type="button" class="type-btn" data-type="url">
+          <i class="fa-solid fa-globe"></i> <span>URL / Link</span>
         </button>
         <button type="button" class="type-btn" data-type="gstin">
           <i class="fa-solid fa-building-columns"></i> <span>GSTIN &amp; Tax</span>
         </button>
         <button type="button" class="type-btn" data-type="upi">
           <i class="fa-solid fa-indian-rupee-sign"></i> <span>UPI &amp; Pay</span>
+        </button>
+        <button type="button" class="type-btn" data-type="phone">
+          <i class="fa-solid fa-phone"></i> <span>Phone &amp; Call</span>
         </button>
         <button type="button" class="type-btn" data-type="wifi">
           <i class="fa-solid fa-wifi"></i> <span>Wi-Fi</span>
@@ -142,8 +127,61 @@
         <div class="config-column">
           
           <div class="input-section">
-            <!-- 1. URL Mode -->
-            <div id="mode-url" class="mode-fields active">
+            
+            <!-- 1. Photo / Image Mode (Upload Image/Photo to Generate QR) -->
+            <div id="mode-image" class="mode-fields active">
+              <label class="field-label">Upload Photo or Image to Generate QR Code</label>
+              <div class="file-dropzone" id="imgModeDropZone">
+                <input type="file" id="imageFileInput" accept="image/jpeg,image/png,image/webp,image/svg+xml,image/gif" class="file-input-hidden">
+                <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <h4>Drag &amp; Drop Photo / Image</h4>
+                <p>Supports JPG, PNG, WebP, SVG &bull; Processed 100% in your browser</p>
+                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('imageFileInput').click()">
+                  <i class="fa-solid fa-image"></i> Browse Photo
+                </button>
+              </div>
+
+              <!-- Uploaded Image Preview & Options -->
+              <div id="imgPreviewCard" class="uploaded-preview-card" style="display: none;">
+                <img id="imgThumbnail" class="thumbnail-img" alt="Uploaded Preview">
+                <div class="preview-info">
+                  <span id="imgFileName" class="preview-filename">photo.jpg</span>
+                  <span id="imgFileSize" class="preview-filesize">120 KB</span>
+                </div>
+                <button type="button" id="removeImgFileBtn" class="btn-xs btn-outline" title="Remove File">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. PDF / Document Mode (Upload Document/PDF to Generate QR) -->
+            <div id="mode-document" class="mode-fields">
+              <label class="field-label">Upload PDF or Document to Generate QR Code</label>
+              <div class="file-dropzone" id="docModeDropZone">
+                <input type="file" id="docFileInput" accept="application/pdf,.pdf,.doc,.docx,.txt,.csv" class="file-input-hidden">
+                <div class="dropzone-icon" style="color: #ef4444;"><i class="fa-solid fa-file-pdf"></i></div>
+                <h4>Drag &amp; Drop PDF / Document File</h4>
+                <p>Supports PDF invoices, documents, tickets &bull; Instant QR Code</p>
+                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('docFileInput').click()">
+                  <i class="fa-solid fa-file-arrow-up"></i> Browse PDF / Document
+                </button>
+              </div>
+
+              <!-- Uploaded Document Preview -->
+              <div id="docPreviewCard" class="uploaded-preview-card" style="display: none;">
+                <div class="doc-icon-badge"><i class="fa-solid fa-file-pdf"></i></div>
+                <div class="preview-info">
+                  <span id="docFileName" class="preview-filename">invoice.pdf</span>
+                  <span id="docFileSize" class="preview-filesize">240 KB</span>
+                </div>
+                <button type="button" id="removeDocFileBtn" class="btn-xs btn-outline" title="Remove File">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- 3. URL Mode -->
+            <div id="mode-url" class="mode-fields">
               <label for="urlInput" class="field-label">Content / Website URL</label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-link input-prefix-icon"></i>
@@ -151,21 +189,7 @@
               </div>
             </div>
 
-            <!-- 2. Phone / WhatsApp Mode -->
-            <div id="mode-phone" class="mode-fields">
-              <label for="phoneInput" class="field-label">Phone / Mobile Number</label>
-              <div class="input-wrapper">
-                <i class="fa-solid fa-phone input-prefix-icon"></i>
-                <input type="tel" id="phoneInput" class="custom-text-input" placeholder="+91 9876543210">
-              </div>
-              <div class="phone-action-row">
-                <label><input type="radio" name="phoneAction" value="tel" checked> Direct Dial (tel:)</label>
-                <label><input type="radio" name="phoneAction" value="wa"> WhatsApp Chat (wa.me)</label>
-                <label><input type="radio" name="phoneAction" value="sms"> SMS Text</label>
-              </div>
-            </div>
-
-            <!-- 3. GSTIN / Business Invoice Mode -->
+            <!-- 4. GSTIN / Business Invoice Mode -->
             <div id="mode-gstin" class="mode-fields">
               <label for="gstinInput" class="field-label">GSTIN Number (15-Digit Indian GST ID)</label>
               <div class="input-wrapper">
@@ -184,7 +208,7 @@
               </div>
             </div>
 
-            <!-- 4. UPI & Payment Mode -->
+            <!-- 5. UPI & Payment Mode -->
             <div id="mode-upi" class="mode-fields">
               <label for="upiId" class="field-label">UPI ID / VPA (Google Pay, PhonePe, Paytm)</label>
               <div class="input-wrapper">
@@ -203,7 +227,21 @@
               </div>
             </div>
 
-            <!-- 5. Wi-Fi Mode -->
+            <!-- 6. Phone / WhatsApp Mode -->
+            <div id="mode-phone" class="mode-fields">
+              <label for="phoneInput" class="field-label">Phone / Mobile Number</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-phone input-prefix-icon"></i>
+                <input type="tel" id="phoneInput" class="custom-text-input" placeholder="+91 9876543210">
+              </div>
+              <div class="phone-action-row">
+                <label><input type="radio" name="phoneAction" value="tel" checked> Direct Dial (tel:)</label>
+                <label><input type="radio" name="phoneAction" value="wa"> WhatsApp Chat (wa.me)</label>
+                <label><input type="radio" name="phoneAction" value="sms"> SMS Text</label>
+              </div>
+            </div>
+
+            <!-- 7. Wi-Fi Mode -->
             <div id="mode-wifi" class="mode-fields">
               <label for="wifiSsid" class="field-label">Network Name (SSID)</label>
               <input type="text" id="wifiSsid" class="custom-text-input" placeholder="MyHome_WiFi">
@@ -223,7 +261,7 @@
               </div>
             </div>
 
-            <!-- 6. vCard Contact Mode -->
+            <!-- 8. vCard Contact Mode -->
             <div id="mode-vcard" class="mode-fields">
               <label class="field-label">Contact Details</label>
               <div class="form-row-2">
@@ -236,7 +274,7 @@
               </div>
             </div>
 
-            <!-- 7. Plain Text / Serial Mode -->
+            <!-- 9. Plain Text / Serial Mode -->
             <div id="mode-text" class="mode-fields">
               <label for="textInput" class="field-label">Plain Text / Serial Number / Barcode Content</label>
               <textarea id="textInput" rows="3" class="custom-textarea" placeholder="Enter any text, tracking ID, product code, or serial number..."></textarea>
@@ -338,104 +376,6 @@
       </div>
     </section>
 
-    <!-- ==========================================
-         SECTION 2: DOCUMENT & PHOTO SCANNER
-         ========================================== -->
-    <section id="section-scanner" class="app-card" style="display: none;">
-      <p class="app-subtitle">
-        Scan &amp; decode QR codes directly from <strong>Photos, Screenshots, PDF Documents, Invoices, or Live Camera</strong> with instant extraction.
-      </p>
-
-      <div class="scanner-mode-pills">
-        <button type="button" class="scan-tab-btn active" data-scanmode="upload">
-          <i class="fa-solid fa-image"></i> <span>Upload Photo / Image</span>
-        </button>
-        <button type="button" class="scan-tab-btn" data-scanmode="pdf">
-          <i class="fa-solid fa-file-pdf"></i> <span>Upload PDF Document</span>
-        </button>
-        <button type="button" class="scan-tab-btn" data-scanmode="camera">
-          <i class="fa-solid fa-camera"></i> <span>Live Camera Scanner</span>
-        </button>
-      </div>
-
-      <div class="scanner-grid">
-        
-        <!-- Left: Upload & Camera Viewport -->
-        <div class="scanner-input-box">
-          
-          <!-- Photo Upload Area -->
-          <div id="scan-view-upload" class="scan-view active">
-            <div class="drop-zone-scanner" id="photoDropZone">
-              <input type="file" id="scanPhotoInput" accept="image/*" class="file-input-hidden">
-              <div class="scan-icon-pulse"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-              <h3>Drag &amp; Drop Photo or Screenshot</h3>
-              <p>Supports JPG, PNG, WebP, HEIC &bull; Paste image with <code>Ctrl+V</code></p>
-              <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('scanPhotoInput').click()">
-                <i class="fa-solid fa-folder-open"></i> Browse Photo
-              </button>
-            </div>
-          </div>
-
-          <!-- PDF Document Upload Area -->
-          <div id="scan-view-pdf" class="scan-view">
-            <div class="drop-zone-scanner" id="pdfDropZone">
-              <input type="file" id="scanPdfInput" accept="application/pdf" class="file-input-hidden">
-              <div class="scan-icon-pulse" style="color: #ef4444;"><i class="fa-solid fa-file-pdf"></i></div>
-              <h3>Upload PDF Document / Invoice</h3>
-              <p>Scans all pages in the PDF for embedded QR codes and GST invoices</p>
-              <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('scanPdfInput').click()">
-                <i class="fa-solid fa-file-arrow-up"></i> Select PDF File
-              </button>
-            </div>
-          </div>
-
-          <!-- Camera Stream Area -->
-          <div id="scan-view-camera" class="scan-view">
-            <div class="camera-viewport-card">
-              <div id="reader" style="width: 100%;"></div>
-              <div class="camera-controls-row">
-                <button type="button" id="startCameraBtn" class="btn btn-primary btn-sm">
-                  <i class="fa-solid fa-video"></i> Start Camera
-                </button>
-                <button type="button" id="stopCameraBtn" class="btn btn-secondary-sm btn-sm" style="display: none;">
-                  <i class="fa-solid fa-video-slash"></i> Stop Camera
-                </button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Right: Scanned Result Card -->
-        <div class="scanner-result-box">
-          <div class="result-header">
-            <h3><i class="fa-solid fa-square-poll-vertical"></i> Scanned Result</h3>
-            <span id="scanTypeBadge" class="scan-badge">Waiting for Scan...</span>
-          </div>
-
-          <div class="result-content-wrap">
-            <div id="scannedTextOutput" class="scanned-text-box">
-              <span class="placeholder-text">Upload a photo, PDF document, or start camera to scan QR code content...</span>
-            </div>
-          </div>
-
-          <!-- Action Buttons for Scanned Result -->
-          <div class="scan-actions-bar" id="scanActionsBar" style="display: none;">
-            <button type="button" id="openScannedLinkBtn" class="btn btn-download-primary" style="display: none;">
-              <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Link
-            </button>
-            <button type="button" id="copyScannedTextBtn" class="btn btn-secondary-sm">
-              <i class="fa-regular fa-copy"></i> Copy Content
-            </button>
-            <button type="button" id="clearScanBtn" class="btn btn-secondary-sm">
-              <i class="fa-solid fa-rotate-left"></i> Clear
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
     <!-- Middle In-Content Ad Placement -->
     <div class="ad-slot-container">
       <span class="ad-label">ADVERTISEMENT</span>
@@ -450,34 +390,30 @@
       </div>
     </div>
 
-    <!-- Educational Guide & FAQ -->
+    <!-- SEO Content Guide Section -->
     <section class="guide-section">
       <article class="guide-article">
-        <h2>How Document &amp; Photo QR Scanning Works in Your Browser</h2>
-        <p>Our document scanner uses client-side optical decoding powered by <strong>jsQR and PDF.js</strong>. When you upload a photo or multi-page PDF invoice, our engine decodes the barcode raster matrix in local memory without uploading sensitive documents to external servers.</p>
+        <h2>How to Generate Custom QR Codes for Photos, Documents, GSTIN &amp; UPI</h2>
+        <p>
+          QR (Quick Response) codes provide instantaneous access to photos, PDF documents, websites, payments, and contact details. Our client-side generator allows you to create high-resolution QR codes that work smoothly with any smartphone camera.
+        </p>
 
-        <h3>Supported Scanner Formats:</h3>
-        <ul style="color: var(--text-muted); line-height: 1.8; margin-left: 1.5rem;">
-          <li><strong>Photos &amp; Screenshots</strong>: Decodes PNG, JPEG, WebP, and pasted clipboard images.</li>
-          <li><strong>PDF Documents &amp; Invoices</strong>: Scans and parses Indian GSTIN e-invoices, utility bills, and tickets.</li>
-          <li><strong>Live Smartphone / Webcam Scanner</strong>: Real-time 60fps camera scanner with auto-focus.</li>
-        </ul>
+        <h3>1. Upload Photo / Image to Generate QR Code</h3>
+        <p>
+          Select the <strong>Photo / Image</strong> tab, upload your photo (JPG, PNG, WebP), and our generator instantly optimizes and encodes your photo into a scannable QR code image.
+        </p>
+
+        <h3>2. Upload PDF Document / Invoice to Generate QR Code</h3>
+        <p>
+          Choose the <strong>PDF / Document</strong> tab, drag &amp; drop your PDF document, contract, or invoice to generate a direct QR code.
+        </p>
+
+        <h3>3. Indian GSTIN Tax Invoice &amp; UPI Payment QR Codes</h3>
+        <p>
+          Easily generate GST-compliant QR codes by entering your 15-digit GSTIN, legal trade name, and invoice number. For contactless payments, enter your UPI ID (VPA) with an optional invoice amount to generate instant Google Pay, PhonePe, and Paytm payment codes.
+        </p>
       </article>
     </section>
-
-    <!-- Bottom Ad Slot -->
-    <div class="ad-slot-container">
-      <span class="ad-label">ADVERTISEMENT</span>
-      <div class="ad-content-placeholder">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-6931746397574530"
-             data-ad-slot="3456789012"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      </div>
-    </div>
 
   </main>
 
@@ -490,11 +426,13 @@
       <a href="terms.html">Terms of Service</a> &bull;
       <a href="contact.html">Contact Us</a>
     </div>
-    <p>&copy; 2026 Custom QR Code Generator &amp; Document Scanner &bull; 100% Client-Side Privacy</p>
+    <p>&copy; 2026 Custom QR Code Generator &bull; 100% Client-Side Privacy &bull; No Server Uploads</p>
   </footer>
 
-  <div id="toast" class="toast" role="alert"></div>
+  <!-- Notification Toast -->
+  <div id="toast" class="toast"></div>
 
+  <!-- Application Logic -->
   <script src="js/app.js"></script>
 </body>
 </html>

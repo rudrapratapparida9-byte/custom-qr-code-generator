@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Custom QR Code Generator & Document Scanner - Modern Design System & Styles
+   Custom QR Code Generator - Modern Design System & Styles
    ========================================================================== */
 
 :root {
@@ -217,50 +217,6 @@ body {
   justify-content: center;
 }
 
-/* Main Navigation Switch: Generator vs Scanner */
-.main-tool-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-bottom: 1.75rem;
-  background: var(--bg-card);
-  padding: 0.4rem;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-color);
-  max-width: 540px;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: var(--shadow-sm);
-}
-
-.tool-switch-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-full);
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.tool-switch-btn:hover {
-  color: var(--text-main);
-}
-
-.tool-switch-btn.active {
-  background: var(--primary);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
-}
-
 /* App Card */
 .app-card {
   background: var(--bg-card);
@@ -441,6 +397,107 @@ body {
   align-items: center;
   gap: 5px;
   cursor: pointer;
+}
+
+/* File Dropzone & Preview Card for Image / Document Upload */
+.file-dropzone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: var(--bg-card-subtle);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.file-dropzone:hover, .file-dropzone.dragover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.dropzone-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-full);
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.file-dropzone h4 {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.file-dropzone p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.uploaded-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-top: 0.85rem;
+}
+
+.thumbnail-img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.doc-icon-badge {
+  width: 46px;
+  height: 46px;
+  background: #fee2e2;
+  color: #ef4444;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+}
+
+.preview-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.preview-filename {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-filesize {
+  font-size: 0.76rem;
+  color: var(--text-muted);
 }
 
 /* Colors Row */
@@ -705,207 +762,6 @@ body {
   color: var(--primary);
 }
 
-/* ==========================================================================
-   SCANNER SECTION STYLES
-   ========================================================================== */
-
-.scanner-mode-pills {
-  display: flex;
-  gap: 0.6rem;
-  margin: 1.25rem 0 1.75rem;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-
-.scan-tab-btn {
-  padding: 0.6rem 1.15rem;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-color);
-  background: var(--bg-card-subtle);
-  color: var(--text-muted);
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: var(--transition);
-  white-space: nowrap;
-}
-
-.scan-tab-btn:hover {
-  color: var(--text-main);
-  border-color: var(--primary);
-}
-
-.scan-tab-btn.active {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-  font-weight: 700;
-}
-
-.scanner-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 2rem;
-  align-items: start;
-}
-
-.scan-view {
-  display: none;
-}
-
-.scan-view.active {
-  display: block;
-}
-
-.drop-zone-scanner {
-  border: 2px dashed var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 2.75rem 1.5rem;
-  text-align: center;
-  background: var(--bg-card-subtle);
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-}
-
-.drop-zone-scanner:hover, .drop-zone-scanner.dragover {
-  border-color: var(--primary);
-  background: var(--primary-light);
-}
-
-.scan-icon-pulse {
-  width: 68px;
-  height: 68px;
-  border-radius: var(--radius-full);
-  background: rgba(79, 70, 229, 0.1);
-  color: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.85rem;
-  margin-bottom: 0.25rem;
-}
-
-.drop-zone-scanner h3 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.drop-zone-scanner p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.file-input-hidden {
-  display: none;
-}
-
-.camera-viewport-card {
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  background: #0f172a;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.25rem;
-}
-
-#reader {
-  width: 100% !important;
-  max-width: 440px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: #000;
-}
-
-.camera-controls-row {
-  margin-top: 1.25rem;
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-}
-
-.scanner-result-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  box-shadow: var(--shadow-sm);
-}
-
-.result-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.result-header h3 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.scan-badge {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  background: var(--badge-bg);
-  color: var(--badge-text);
-  border: 1px solid var(--badge-border);
-}
-
-.scan-badge.success {
-  background: #ecfdf5;
-  color: #059669;
-  border-color: #a7f3d0;
-}
-
-.scanned-text-box {
-  min-height: 200px;
-  max-height: 340px;
-  overflow-y: auto;
-  background: var(--bg-card-subtle);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.88rem;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-break: break-all;
-  color: var(--text-main);
-}
-
-.scanned-text-box .placeholder-text {
-  color: var(--text-muted);
-  font-family: var(--font-sans);
-  font-style: italic;
-}
-
-.scan-actions-bar {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
 /* Guide Section */
 .guide-section {
   margin-top: 3rem;
@@ -996,7 +852,7 @@ body {
 
 /* Responsive */
 @media (max-width: 860px) {
-  .generator-grid, .scanner-grid {
+  .generator-grid {
     grid-template-columns: 1fr;
   }
   .header-container {
