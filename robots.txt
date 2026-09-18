@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rudrapratapparida9-byte.github.io/custom-qr-code-generator/sitemap.xml
+Sitemap: https://custom-qr-code-generator-nfr7.onrender.com/sitemap.xml
