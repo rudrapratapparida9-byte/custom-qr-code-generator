@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: custom-qr-code-generator
+    env: static
+    buildCommand: ""
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: "*"

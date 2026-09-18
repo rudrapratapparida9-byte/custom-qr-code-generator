@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Custom QR Code Generator – URLs, GSTIN, Phone, UPI, Wi-Fi &amp; Text</title>
+  
+  <!-- SEO & Social Meta Tags -->
+  <meta name="description" content="Free high-resolution Custom QR Code Generator. Create stylish QR codes for Website URLs, GSTIN tax invoices, Phone Numbers, UPI payments, Wi-Fi, and vCards. 100% free with PNG, SVG & Vector export.">
+  <meta name="keywords" content="qr code generator, custom qr code, gstin qr code generator, upi qr code, phone qr code, wifi qr code, vcard qr code, vector qr code, colored qr code with logo">
+  <meta name="author" content="QR Studio Pro">
+  <meta name="theme-color" content="#4f46e5">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Custom QR Code Generator – PNG &amp; Vector Quality">
+  <meta property="og:description" content="Generate stylish high-resolution QR codes for websites, GSTIN, phone numbers, UPI, Wi-Fi networks, or contact cards.">
+  <meta property="og:image" content="icons/icon-512.svg">
+
+  <link rel="icon" type="image/svg+xml" href="icons/icon-512.svg">
+  <link rel="apple-touch-icon" href="icons/icon-512.svg">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- QR Code Styling Library for High-Def Canvas & SVG Rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+
+  <!-- Google AdSense Auto Ads Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6931746397574530" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <a href="index.html" class="brand-link">
+          <div class="brand-icon">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <div>
+            <h1 class="brand-title">Custom QR Code Generator</h1>
+            <span class="private-badge"><i class="fa-solid fa-bolt"></i> PNG &amp; VECTOR QUALITY</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="privacy.html" class="nav-link">Privacy</a>
+        <a href="terms.html" class="nav-link">Terms</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn-icon" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- Top Header Ad Placement (Google AdSense Ready) -->
+    <div class="ad-slot-container">
+      <span class="ad-label">ADVERTISEMENT</span>
+      <div class="ad-content-placeholder">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6931746397574530"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <p class="app-subtitle">
+        Generate stylish high-resolution QR codes for websites, plain text, Wi-Fi networks, phone numbers, GSTIN invoices, or contact cards.
+      </p>
+
+      <!-- Category Mode Selection Bar -->
+      <div class="qr-type-selector">
+        <button type="button" class="type-btn active" data-type="url">
+          <i class="fa-solid fa-globe"></i> <span>URL / Link</span>
+        </button>
+        <button type="button" class="type-btn" data-type="phone">
+          <i class="fa-solid fa-phone"></i> <span>Phone &amp; Call</span>
+        </button>
+        <button type="button" class="type-btn" data-type="gstin">
+          <i class="fa-solid fa-building-columns"></i> <span>GSTIN &amp; Tax</span>
+        </button>
+        <button type="button" class="type-btn" data-type="upi">
+          <i class="fa-solid fa-indian-rupee-sign"></i> <span>UPI &amp; Pay</span>
+        </button>
+        <button type="button" class="type-btn" data-type="wifi">
+          <i class="fa-solid fa-wifi"></i> <span>Wi-Fi</span>
+        </button>
+        <button type="button" class="type-btn" data-type="vcard">
+          <i class="fa-solid fa-address-card"></i> <span>vCard Contact</span>
+        </button>
+        <button type="button" class="type-btn" data-type="text">
+          <i class="fa-solid fa-font"></i> <span>Text / Serial</span>
+        </button>
+      </div>
+
+      <!-- Main Two-Column Workspace (Matching Reference Screenshot) -->
+      <div class="generator-grid">
+        
+        <!-- Left Column: Dynamic Inputs & Style Customizations -->
+        <div class="config-column">
+          
+          <!-- Mode Input Container -->
+          <div class="input-section">
+            
+            <!-- 1. URL Mode -->
+            <div id="mode-url" class="mode-fields active">
+              <label for="urlInput" class="field-label">Content / Website URL</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-link input-prefix-icon"></i>
+                <input type="url" id="urlInput" class="custom-text-input" placeholder="https://smartcalcpro.online" value="https://smartcalcpro.online">
+              </div>
+            </div>
+
+            <!-- 2. Phone / WhatsApp Mode -->
+            <div id="mode-phone" class="mode-fields">
+              <label for="phoneInput" class="field-label">Phone / Mobile Number</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-phone input-prefix-icon"></i>
+                <input type="tel" id="phoneInput" class="custom-text-input" placeholder="+91 9876543210">
+              </div>
+              <div class="phone-action-row">
+                <label><input type="radio" name="phoneAction" value="tel" checked> Direct Dial (tel:)</label>
+                <label><input type="radio" name="phoneAction" value="wa"> WhatsApp Chat (wa.me)</label>
+                <label><input type="radio" name="phoneAction" value="sms"> SMS Text</label>
+              </div>
+            </div>
+
+            <!-- 3. GSTIN / Business Invoice Mode -->
+            <div id="mode-gstin" class="mode-fields">
+              <label for="gstinInput" class="field-label">GSTIN Number (15-Digit Indian GST ID)</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-landmark input-prefix-icon"></i>
+                <input type="text" id="gstinInput" class="custom-text-input uppercase" placeholder="e.g. 27AAAAA0000A1Z5" maxlength="15">
+              </div>
+              <div class="form-row-2">
+                <div class="form-sub-field">
+                  <label for="businessName">Legal Business / Trade Name</label>
+                  <input type="text" id="businessName" class="custom-text-input-sm" placeholder="XYZ Enterprises Pvt Ltd">
+                </div>
+                <div class="form-sub-field">
+                  <label for="invoiceNo">Invoice / Ref No (Optional)</label>
+                  <input type="text" id="invoiceNo" class="custom-text-input-sm" placeholder="INV-2026-001">
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. UPI & Payment Mode -->
+            <div id="mode-upi" class="mode-fields">
+              <label for="upiId" class="field-label">UPI ID / VPA (Google Pay, PhonePe, Paytm)</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-wallet input-prefix-icon"></i>
+                <input type="text" id="upiId" class="custom-text-input" placeholder="merchant@okhdfcbank or 9876543210@paytm">
+              </div>
+              <div class="form-row-2">
+                <div class="form-sub-field">
+                  <label for="payeeName">Payee Name</label>
+                  <input type="text" id="payeeName" class="custom-text-input-sm" placeholder="Store or Personal Name">
+                </div>
+                <div class="form-sub-field">
+                  <label for="upiAmount">Amount (₹ Optional)</label>
+                  <input type="number" id="upiAmount" class="custom-text-input-sm" placeholder="100.00" step="0.01">
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. Wi-Fi Mode -->
+            <div id="mode-wifi" class="mode-fields">
+              <label for="wifiSsid" class="field-label">Network Name (SSID)</label>
+              <input type="text" id="wifiSsid" class="custom-text-input" placeholder="MyHome_WiFi">
+              <div class="form-row-2" style="margin-top: 8px;">
+                <div class="form-sub-field">
+                  <label for="wifiPass">Wi-Fi Password</label>
+                  <input type="text" id="wifiPass" class="custom-text-input-sm" placeholder="Password123">
+                </div>
+                <div class="form-sub-field">
+                  <label for="wifiType">Encryption Type</label>
+                  <select id="wifiType" class="custom-select-sm">
+                    <option value="WPA" selected>WPA/WPA2/WPA3</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">None (Open)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. vCard Contact Mode -->
+            <div id="mode-vcard" class="mode-fields">
+              <label class="field-label">Contact Details</label>
+              <div class="form-row-2">
+                <input type="text" id="vName" class="custom-text-input-sm" placeholder="Full Name (e.g. Rudra Pratap)">
+                <input type="tel" id="vPhone" class="custom-text-input-sm" placeholder="Phone (+91...)">
+              </div>
+              <div class="form-row-2" style="margin-top: 6px;">
+                <input type="email" id="vEmail" class="custom-text-input-sm" placeholder="Email Address">
+                <input type="text" id="vCompany" class="custom-text-input-sm" placeholder="Company / Organization">
+              </div>
+            </div>
+
+            <!-- 7. Plain Text / Serial Mode -->
+            <div id="mode-text" class="mode-fields">
+              <label for="textInput" class="field-label">Plain Text / Serial Number / Barcode Content</label>
+              <textarea id="textInput" rows="3" class="custom-textarea" placeholder="Enter any text, tracking ID, product code, or serial number..."></textarea>
+            </div>
+
+          </div>
+
+          <!-- Color Customization Row (Matching Screenshot Layout) -->
+          <div class="colors-row">
+            <div class="color-picker-box">
+              <label class="color-label">QR Color</label>
+              <div class="color-input-group">
+                <input type="color" id="qrColorPicker" value="#0F172A" class="native-color-picker">
+                <input type="text" id="qrColorHex" value="#0F172A" class="color-hex-text" maxlength="7">
+              </div>
+            </div>
+
+            <div class="color-picker-box">
+              <label class="color-label">Background</label>
+              <div class="color-input-group">
+                <input type="color" id="bgColorPicker" value="#FFFFFF" class="native-color-picker">
+                <input type="text" id="bgColorHex" value="#FFFFFF" class="color-hex-text" maxlength="7">
+              </div>
+            </div>
+          </div>
+
+          <!-- QR Resolution Dropdown (Matching Screenshot Layout) -->
+          <div class="resolution-box">
+            <label for="resolutionSelect" class="field-label">QR Resolution</label>
+            <div class="select-wrapper">
+              <select id="resolutionSelect" class="custom-select">
+                <option value="256">256 x 256 px (Standard)</option>
+                <option value="512" selected>512 x 512 px (High Definition)</option>
+                <option value="1024">1024 x 1024 px (Ultra HD)</option>
+                <option value="2048">2048 x 2048 px (Print / Vector)</option>
+              </select>
+              <i class="fa-solid fa-chevron-down select-chevron"></i>
+            </div>
+          </div>
+
+          <!-- Advanced Customizations Accordion (Logo, Dot Style, Error Correction) -->
+          <details class="advanced-styling-details">
+            <summary><i class="fa-solid fa-sliders"></i> Advanced Styling (Logo &amp; Corner Dots)</summary>
+            <div class="advanced-styling-body">
+              <div class="form-row-2">
+                <div class="form-sub-field">
+                  <label for="dotStyleSelect">Dot Pattern</label>
+                  <select id="dotStyleSelect" class="custom-select-sm">
+                    <option value="square" selected>Square (Classic)</option>
+                    <option value="dots">Dots (Round)</option>
+                    <option value="rounded">Rounded</option>
+                    <option value="extra-rounded">Extra Rounded</option>
+                    <option value="classy">Classy</option>
+                  </select>
+                </div>
+                <div class="form-sub-field">
+                  <label for="cornerStyleSelect">Corner Square Style</label>
+                  <select id="cornerStyleSelect" class="custom-select-sm">
+                    <option value="square" selected>Square</option>
+                    <option value="dot">Dot</option>
+                    <option value="extra-rounded">Rounded</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 10px;">
+                <label for="logoUpload">Center Logo / Icon (Optional)</label>
+                <input type="file" id="logoUpload" accept="image/png,image/jpeg,image/svg+xml" class="custom-file-input">
+                <button type="button" id="removeLogoBtn" class="btn-xs btn-outline" style="display: none; margin-top: 4px;">Remove Logo</button>
+              </div>
+            </div>
+          </details>
+
+        </div>
+
+        <!-- Right Column: Prominent Large QR Code Preview & Action Buttons -->
+        <div class="preview-column">
+          <div class="qr-canvas-card">
+            <!-- QR Code Canvas Container rendered dynamically -->
+            <div id="qrCodeWrapper" class="qr-code-wrapper">
+              <!-- Rendered via QR Code Styling JS -->
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons (Matching Screenshot Button) -->
+          <div class="download-actions-row">
+            <button type="button" id="downloadPngBtn" class="btn btn-download-primary">
+              <i class="fa-solid fa-download"></i> Download QR Code (PNG)
+            </button>
+            <div class="secondary-btn-row">
+              <button type="button" id="downloadSvgBtn" class="btn btn-secondary-sm" title="Download Scalable Vector Graphic">
+                <i class="fa-solid fa-file-code"></i> SVG Vector
+              </button>
+              <button type="button" id="copyQrBtn" class="btn btn-secondary-sm" title="Copy QR image to clipboard">
+                <i class="fa-regular fa-copy"></i> Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Middle In-Content Ad Placement -->
+    <div class="ad-slot-container">
+      <span class="ad-label">ADVERTISEMENT</span>
+      <div class="ad-content-placeholder">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6931746397574530"
+             data-ad-slot="2345678901"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <!-- Educational Guide & FAQ (High Value Content for Google AdSense Approval) -->
+    <section class="guide-section">
+      <article class="guide-article">
+        <h2>QR Code Best Practices: Scannability, High Resolution &amp; GSTIN / UPI Standards</h2>
+        <p>A Quick Response (QR) code is a two-dimensional matrix barcode that stores up to 4,296 alphanumeric characters. Whether printing for e-commerce, GST compliance, or Wi-Fi sharing, following correct standards ensures seamless scanning across all iOS and Android smartphone cameras.</p>
+
+        <h3>1. Color Contrast &amp; Quiet Zones</h3>
+        <p>Always maintain high contrast between the QR code foreground and background (e.g. dark blue/black on pure white). Never invert colors with a dark background and faint foreground, as older optical barcode scanners cannot decode inverted matrices.</p>
+
+        <h3>2. GSTIN &amp; Tax Invoice QR Codes</h3>
+        <p>In India and several global tax frameworks, B2B invoices require a machine-readable QR code encoding the seller's GSTIN, invoice reference number, date, and invoice value. Our generator structures GSTIN payloads for instant verification.</p>
+
+        <h3>3. UPI Dynamic Payment QR Specifications</h3>
+        <p>Unified Payments Interface (UPI) QR codes use the universal deep-link format <code>upi://pay?pa=VPA&amp;pn=NAME&amp;am=AMOUNT&amp;cu=INR</code>, allowing customers to scan and pay directly via Google Pay, PhonePe, Paytm, or BHIM.</p>
+      </article>
+    </section>
+
+    <!-- Bottom Ad Slot -->
+    <div class="ad-slot-container">
+      <span class="ad-label">ADVERTISEMENT</span>
+      <div class="ad-content-placeholder">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6931746397574530"
+             data-ad-slot="3456789012"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer with Google AdSense Compliance Links -->
+  <footer class="app-footer">
+    <div class="footer-links">
+      <a href="index.html">Home</a> &bull;
+      <a href="about.html">About Us</a> &bull;
+      <a href="privacy.html">Privacy Policy</a> &bull;
+      <a href="terms.html">Terms of Service</a> &bull;
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <p>&copy; 2026 Custom QR Code Generator &bull; High Resolution PNG &amp; Vector Quality &bull; 100% Free</p>
+  </footer>
+
+  <div id="toast" class="toast" role="alert"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

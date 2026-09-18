@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="qrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#qrGrad)"/>
+  <!-- QR Outer Box -->
+  <rect x="110" y="110" width="110" height="110" rx="16" fill="none" stroke="#ffffff" stroke-width="24"/>
+  <rect x="145" y="145" width="40" height="40" rx="8" fill="#ffffff"/>
+  
+  <rect x="292" y="110" width="110" height="110" rx="16" fill="none" stroke="#ffffff" stroke-width="24"/>
+  <rect x="327" y="145" width="40" height="40" rx="8" fill="#ffffff"/>
+
+  <rect x="110" y="292" width="110" height="110" rx="16" fill="none" stroke="#ffffff" stroke-width="24"/>
+  <rect x="145" y="327" width="40" height="40" rx="8" fill="#ffffff"/>
+
+  <!-- Matrix Dots -->
+  <rect x="290" y="290" width="40" height="40" rx="8" fill="#ffffff"/>
+  <rect x="360" y="290" width="40" height="40" rx="8" fill="#ffffff"/>
+  <rect x="290" y="360" width="40" height="40" rx="8" fill="#ffffff"/>
+  <rect x="360" y="360" width="40" height="40" rx="8" fill="#34d399"/>
+</svg>
