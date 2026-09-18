@@ -1,7 +1,7 @@
 /**
  * Custom QR Code Generator Engine
- * Generates instant QR codes from uploaded Photos/Images, PDF Documents,
- * GSTIN Invoices, UPI Payments, Phone/WhatsApp, Wi-Fi, vCard & Plain Text.
+ * Generates instant QR codes for URLs, GSTIN Invoices, UPI Payments,
+ * Phone/WhatsApp, Wi-Fi Networks, vCard Contacts & Plain Text.
  */
 
 (function () {
@@ -11,13 +11,11 @@
   // STATE MANAGEMENT
   // ==========================================
   let qrCode = null;
-  let currentMode = 'image';
+  let currentMode = 'url';
   let uploadedLogoUrl = null;
-  let uploadedImageDataUrl = null;
-  let uploadedDocDataUrl = null;
 
   const config = {
-    data: 'https://smartcalcpro.online/photo-viewer',
+    data: 'https://smartcalcpro.online',
     width: 320,
     height: 320,
     qrColor: '#0F172A',
@@ -27,33 +25,12 @@
     errorCorrectionLevel: 'Q'
   };
 
-  // Sample placeholder for initial image QR code
-  const DEFAULT_IMAGE_PAYLOAD = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%234f46e5"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="sans-serif" font-size="20">Photo QR</text></svg>';
-  const DEFAULT_DOC_PAYLOAD = 'data:application/pdf;base64,JVBERi0xLjcKCjEgMCBvYmogICU...';
-
   // ==========================================
   // DOM ELEMENTS
   // ==========================================
   const qrCodeWrapper = document.getElementById('qrCodeWrapper');
   const typeBtns = document.querySelectorAll('.type-btn');
   const modeFields = document.querySelectorAll('.mode-fields');
-
-  // Image Mode Elements
-  const imgModeDropZone = document.getElementById('imgModeDropZone');
-  const imageFileInput = document.getElementById('imageFileInput');
-  const imgPreviewCard = document.getElementById('imgPreviewCard');
-  const imgThumbnail = document.getElementById('imgThumbnail');
-  const imgFileName = document.getElementById('imgFileName');
-  const imgFileSize = document.getElementById('imgFileSize');
-  const removeImgFileBtn = document.getElementById('removeImgFileBtn');
-
-  // Document Mode Elements
-  const docModeDropZone = document.getElementById('docModeDropZone');
-  const docFileInput = document.getElementById('docFileInput');
-  const docPreviewCard = document.getElementById('docPreviewCard');
-  const docFileName = document.getElementById('docFileName');
-  const docFileSize = document.getElementById('docFileSize');
-  const removeDocFileBtn = document.getElementById('removeDocFileBtn');
 
   // Colors & Customizations
   const qrColorPicker = document.getElementById('qrColorPicker');
@@ -79,8 +56,6 @@
   // ==========================================
   document.addEventListener('DOMContentLoaded', () => {
     setupTypeSelector();
-    setupImageUpload();
-    setupDocumentUpload();
     setupColorPickers();
     setupEventListeners();
     setupTheme();
@@ -161,14 +136,6 @@
 
   function generatePayloadData() {
     switch (currentMode) {
-      case 'image': {
-        return uploadedImageDataUrl || DEFAULT_IMAGE_PAYLOAD;
-      }
-
-      case 'document': {
-        return uploadedDocDataUrl || 'https://smartcalcpro.online/sample-document.pdf';
-      }
-
       case 'url': {
         const url = document.getElementById('urlInput')?.value.trim();
         return url || 'https://smartcalcpro.online';
@@ -250,158 +217,7 @@
   }
 
   // ==========================================
-  // 3. IMAGE / PHOTO UPLOAD TO QR
-  // ==========================================
-  function setupImageUpload() {
-    if (!imgModeDropZone || !imageFileInput) return;
-
-    ['dragenter', 'dragover'].forEach(name => {
-      imgModeDropZone.addEventListener(name, (e) => {
-        e.preventDefault();
-        imgModeDropZone.classList.add('dragover');
-      });
-    });
-
-    ['dragleave', 'drop'].forEach(name => {
-      imgModeDropZone.addEventListener(name, (e) => {
-        e.preventDefault();
-        imgModeDropZone.classList.remove('dragover');
-      });
-    });
-
-    imgModeDropZone.addEventListener('drop', (e) => {
-      const files = e.dataTransfer.files;
-      if (files.length > 0 && files[0].type.startsWith('image/')) {
-        handleImageFile(files[0]);
-      } else {
-        showToast('Please drop a valid image file (JPG, PNG, WebP)');
-      }
-    });
-
-    imageFileInput.addEventListener('change', (e) => {
-      if (e.target.files && e.target.files.length > 0) {
-        handleImageFile(e.target.files[0]);
-      }
-    });
-
-    removeImgFileBtn?.addEventListener('click', () => {
-      uploadedImageDataUrl = null;
-      imageFileInput.value = '';
-      imgPreviewCard.style.display = 'none';
-      imgModeDropZone.style.display = 'flex';
-      updateQrCode();
-      showToast('Image removed');
-    });
-  }
-
-  function handleImageFile(file) {
-    showToast('Processing photo for QR generation...');
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        // Optimize image size to fit nicely in QR data uri
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
-        const maxDim = 320;
-
-        if (width > maxDim || height > maxDim) {
-          if (width > height) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          } else {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-
-        uploadedImageDataUrl = canvas.toDataURL('image/jpeg', 0.65);
-
-        // Update UI Preview Card
-        imgThumbnail.src = uploadedImageDataUrl;
-        imgFileName.textContent = file.name;
-        imgFileSize.textContent = formatBytes(file.size);
-        imgPreviewCard.style.display = 'flex';
-        imgModeDropZone.style.display = 'none';
-
-        updateQrCode();
-        showToast('QR Code generated for Photo!');
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // ==========================================
-  // 4. DOCUMENT / PDF UPLOAD TO QR
-  // ==========================================
-  function setupDocumentUpload() {
-    if (!docModeDropZone || !docFileInput) return;
-
-    ['dragenter', 'dragover'].forEach(name => {
-      docModeDropZone.addEventListener(name, (e) => {
-        e.preventDefault();
-        docModeDropZone.classList.add('dragover');
-      });
-    });
-
-    ['dragleave', 'drop'].forEach(name => {
-      docModeDropZone.addEventListener(name, (e) => {
-        e.preventDefault();
-        docModeDropZone.classList.remove('dragover');
-      });
-    });
-
-    docModeDropZone.addEventListener('drop', (e) => {
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        handleDocumentFile(files[0]);
-      }
-    });
-
-    docFileInput.addEventListener('change', (e) => {
-      if (e.target.files && e.target.files.length > 0) {
-        handleDocumentFile(e.target.files[0]);
-      }
-    });
-
-    removeDocFileBtn?.addEventListener('click', () => {
-      uploadedDocDataUrl = null;
-      docFileInput.value = '';
-      docPreviewCard.style.display = 'none';
-      docModeDropZone.style.display = 'flex';
-      updateQrCode();
-      showToast('Document removed');
-    });
-  }
-
-  function handleDocumentFile(file) {
-    showToast('Encoding document for QR code...');
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      uploadedDocDataUrl = e.target.result;
-
-      docFileName.textContent = file.name;
-      docFileSize.textContent = formatBytes(file.size);
-      docPreviewCard.style.display = 'flex';
-      docModeDropZone.style.display = 'none';
-
-      updateQrCode();
-      showToast('QR Code generated for Document!');
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // ==========================================
-  // 5. COLORS, CUSTOMIZATIONS & EVENTS
+  // 3. COLORS, CUSTOMIZATIONS & EVENTS
   // ==========================================
   function setupColorPickers() {
     // QR Color
@@ -543,14 +359,6 @@
       console.error(err);
       showToast('Could not copy QR code');
     }
-  }
-
-  function formatBytes(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
   }
 
   function showToast(msg) {

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Custom QR Code Generator – Upload Photo, PDF Document, GSTIN, UPI &amp; URL</title>
+  <title>Custom QR Code Generator – URL, GSTIN, UPI, Phone &amp; Wi-Fi</title>
   
   <!-- SEO & Social Meta Tags -->
-  <meta name="description" content="Free high-resolution Custom QR Code Generator. Upload photos, images, PDF documents, or enter URLs, GSTIN tax invoices, Phone, UPI, Wi-Fi & vCards to generate instant QR codes.">
-  <meta name="keywords" content="qr code generator, upload photo to qr code, upload pdf to qr code, document qr generator, image qr code, gstin qr generator, upi qr code, vector qr code">
+  <meta name="description" content="Free high-resolution Custom QR Code Generator. Generate instant QR codes for URLs, GSTIN tax invoices, UPI payments, Phone numbers, Wi-Fi & vCards.">
+  <meta name="keywords" content="qr code generator, gstin qr generator, upi qr code, vector qr code, wifi qr generator, vcard qr code">
   <meta name="author" content="QR Studio Pro">
   <meta name="theme-color" content="#4f46e5">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Custom QR Code Generator – Photo, PDF &amp; Document QR">
-  <meta property="og:description" content="Upload images and documents to generate instant QR codes. 100% free and in-browser private.">
+  <meta property="og:title" content="Custom QR Code Generator">
+  <meta property="og:description" content="Generate high-resolution QR codes for Websites, GSTIN, UPI, Phone, Wi-Fi and vCard. 100% free and in-browser private.">
   <meta property="og:image" content="icons/icon-512.svg">
 
   <link rel="icon" type="image/svg+xml" href="icons/icon-512.svg">
@@ -45,7 +45,7 @@
           </div>
           <div>
             <h1 class="brand-title">QR Studio Pro</h1>
-            <span class="private-badge"><i class="fa-solid fa-shield-halved"></i> 100% PRIVATE &bull; NO SERVER UPLOAD</span>
+            <span class="private-badge"><i class="fa-solid fa-shield-halved"></i> 100% PRIVATE</span>
           </div>
         </a>
       </div>
@@ -86,18 +86,12 @@
     <!-- QR Code Generator Workspace Card -->
     <section class="app-card">
       <p class="app-subtitle">
-        Upload <strong>Photos, Images, PDF Documents</strong> or generate high-resolution QR codes for <strong>Websites, GSTIN Invoices, UPI, Wi-Fi &amp; Contacts</strong>.
+        Generate stylish high-resolution QR codes for <strong>Websites, GSTIN Invoices, UPI Payments, Phone Numbers, Wi-Fi Networks &amp; Contacts</strong>.
       </p>
 
       <!-- Category Mode Selection Bar -->
       <div class="qr-type-selector">
-        <button type="button" class="type-btn active" data-type="image">
-          <i class="fa-solid fa-image"></i> <span>Photo / Image</span>
-        </button>
-        <button type="button" class="type-btn" data-type="document">
-          <i class="fa-solid fa-file-pdf"></i> <span>PDF / Document</span>
-        </button>
-        <button type="button" class="type-btn" data-type="url">
+        <button type="button" class="type-btn active" data-type="url">
           <i class="fa-solid fa-globe"></i> <span>URL / Link</span>
         </button>
         <button type="button" class="type-btn" data-type="gstin">
@@ -128,60 +122,8 @@
           
           <div class="input-section">
             
-            <!-- 1. Photo / Image Mode (Upload Image/Photo to Generate QR) -->
-            <div id="mode-image" class="mode-fields active">
-              <label class="field-label">Upload Photo or Image to Generate QR Code</label>
-              <div class="file-dropzone" id="imgModeDropZone">
-                <input type="file" id="imageFileInput" accept="image/jpeg,image/png,image/webp,image/svg+xml,image/gif" class="file-input-hidden">
-                <div class="dropzone-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                <h4>Drag &amp; Drop Photo / Image</h4>
-                <p>Supports JPG, PNG, WebP, SVG &bull; Processed 100% in your browser</p>
-                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('imageFileInput').click()">
-                  <i class="fa-solid fa-image"></i> Browse Photo
-                </button>
-              </div>
-
-              <!-- Uploaded Image Preview & Options -->
-              <div id="imgPreviewCard" class="uploaded-preview-card" style="display: none;">
-                <img id="imgThumbnail" class="thumbnail-img" alt="Uploaded Preview">
-                <div class="preview-info">
-                  <span id="imgFileName" class="preview-filename">photo.jpg</span>
-                  <span id="imgFileSize" class="preview-filesize">120 KB</span>
-                </div>
-                <button type="button" id="removeImgFileBtn" class="btn-xs btn-outline" title="Remove File">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- 2. PDF / Document Mode (Upload Document/PDF to Generate QR) -->
-            <div id="mode-document" class="mode-fields">
-              <label class="field-label">Upload PDF or Document to Generate QR Code</label>
-              <div class="file-dropzone" id="docModeDropZone">
-                <input type="file" id="docFileInput" accept="application/pdf,.pdf,.doc,.docx,.txt,.csv" class="file-input-hidden">
-                <div class="dropzone-icon" style="color: #ef4444;"><i class="fa-solid fa-file-pdf"></i></div>
-                <h4>Drag &amp; Drop PDF / Document File</h4>
-                <p>Supports PDF invoices, documents, tickets &bull; Instant QR Code</p>
-                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('docFileInput').click()">
-                  <i class="fa-solid fa-file-arrow-up"></i> Browse PDF / Document
-                </button>
-              </div>
-
-              <!-- Uploaded Document Preview -->
-              <div id="docPreviewCard" class="uploaded-preview-card" style="display: none;">
-                <div class="doc-icon-badge"><i class="fa-solid fa-file-pdf"></i></div>
-                <div class="preview-info">
-                  <span id="docFileName" class="preview-filename">invoice.pdf</span>
-                  <span id="docFileSize" class="preview-filesize">240 KB</span>
-                </div>
-                <button type="button" id="removeDocFileBtn" class="btn-xs btn-outline" title="Remove File">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- 3. URL Mode -->
-            <div id="mode-url" class="mode-fields">
+            <!-- 1. URL Mode -->
+            <div id="mode-url" class="mode-fields active">
               <label for="urlInput" class="field-label">Content / Website URL</label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-link input-prefix-icon"></i>
@@ -189,7 +131,7 @@
               </div>
             </div>
 
-            <!-- 4. GSTIN / Business Invoice Mode -->
+            <!-- 2. GSTIN / Business Invoice Mode -->
             <div id="mode-gstin" class="mode-fields">
               <label for="gstinInput" class="field-label">GSTIN Number (15-Digit Indian GST ID)</label>
               <div class="input-wrapper">
@@ -208,7 +150,7 @@
               </div>
             </div>
 
-            <!-- 5. UPI & Payment Mode -->
+            <!-- 3. UPI & Payment Mode -->
             <div id="mode-upi" class="mode-fields">
               <label for="upiId" class="field-label">UPI ID / VPA (Google Pay, PhonePe, Paytm)</label>
               <div class="input-wrapper">
@@ -227,7 +169,7 @@
               </div>
             </div>
 
-            <!-- 6. Phone / WhatsApp Mode -->
+            <!-- 4. Phone / WhatsApp Mode -->
             <div id="mode-phone" class="mode-fields">
               <label for="phoneInput" class="field-label">Phone / Mobile Number</label>
               <div class="input-wrapper">
@@ -241,7 +183,7 @@
               </div>
             </div>
 
-            <!-- 7. Wi-Fi Mode -->
+            <!-- 5. Wi-Fi Mode -->
             <div id="mode-wifi" class="mode-fields">
               <label for="wifiSsid" class="field-label">Network Name (SSID)</label>
               <input type="text" id="wifiSsid" class="custom-text-input" placeholder="MyHome_WiFi">
@@ -261,7 +203,7 @@
               </div>
             </div>
 
-            <!-- 8. vCard Contact Mode -->
+            <!-- 6. vCard Contact Mode -->
             <div id="mode-vcard" class="mode-fields">
               <label class="field-label">Contact Details</label>
               <div class="form-row-2">
@@ -274,7 +216,7 @@
               </div>
             </div>
 
-            <!-- 9. Plain Text / Serial Mode -->
+            <!-- 7. Plain Text / Serial Mode -->
             <div id="mode-text" class="mode-fields">
               <label for="textInput" class="field-label">Plain Text / Serial Number / Barcode Content</label>
               <textarea id="textInput" rows="3" class="custom-textarea" placeholder="Enter any text, tracking ID, product code, or serial number..."></textarea>
@@ -393,24 +335,24 @@
     <!-- SEO Content Guide Section -->
     <section class="guide-section">
       <article class="guide-article">
-        <h2>How to Generate Custom QR Codes for Photos, Documents, GSTIN &amp; UPI</h2>
+        <h2>How to Generate Custom QR Codes for Websites, GSTIN &amp; UPI</h2>
         <p>
-          QR (Quick Response) codes provide instantaneous access to photos, PDF documents, websites, payments, and contact details. Our client-side generator allows you to create high-resolution QR codes that work smoothly with any smartphone camera.
+          QR (Quick Response) codes provide instantaneous access to websites, payments, Wi-Fi networks, and contact details. Our generator allows you to create high-resolution QR codes that scan reliably on any smartphone.
         </p>
 
-        <h3>1. Upload Photo / Image to Generate QR Code</h3>
+        <h3>1. Website URLs &amp; Social Links</h3>
         <p>
-          Select the <strong>Photo / Image</strong> tab, upload your photo (JPG, PNG, WebP), and our generator instantly optimizes and encodes your photo into a scannable QR code image.
+          Select the <strong>URL / Link</strong> tab, paste any website address, and immediately download a clean, high-resolution QR code.
         </p>
 
-        <h3>2. Upload PDF Document / Invoice to Generate QR Code</h3>
+        <h3>2. Indian GSTIN Tax Invoices &amp; Trade Invoices</h3>
         <p>
-          Choose the <strong>PDF / Document</strong> tab, drag &amp; drop your PDF document, contract, or invoice to generate a direct QR code.
+          Generate GST-compliant QR codes by entering your 15-digit GSTIN, legal business name, and invoice number.
         </p>
 
-        <h3>3. Indian GSTIN Tax Invoice &amp; UPI Payment QR Codes</h3>
+        <h3>3. Contactless UPI Payments (Google Pay, PhonePe, Paytm)</h3>
         <p>
-          Easily generate GST-compliant QR codes by entering your 15-digit GSTIN, legal trade name, and invoice number. For contactless payments, enter your UPI ID (VPA) with an optional invoice amount to generate instant Google Pay, PhonePe, and Paytm payment codes.
+          Generate direct payment QR codes by specifying your UPI VPA ID and payee name with optional transaction amounts in INR.
         </p>
       </article>
     </section>
