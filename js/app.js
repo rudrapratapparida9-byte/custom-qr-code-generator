@@ -346,18 +346,38 @@
     }
 
     try {
-      canvas.toBlob(async (blob) => {
-        if (navigator.clipboard && window.ClipboardItem) {
-          const item = new ClipboardItem({ 'image/png': blob });
-          await navigator.clipboard.write([item]);
-          showToast('QR Code copied to clipboard!');
-        } else {
-          showToast('Clipboard not supported in this browser');
-        }
-      }, 'image/png');
+      if (canvas.toBlob && window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        canvas.toBlob(async (blob) => {
+          try {
+            const item = new ClipboardItem({ 'image/png': blob });
+            await navigator.clipboard.write([item]);
+            showToast('QR Code copied to clipboard!');
+          } catch (e) {
+            fallbackCopyText(config.data);
+          }
+        }, 'image/png');
+      } else {
+        fallbackCopyText(config.data);
+      }
     } catch (err) {
-      console.error(err);
-      showToast('Could not copy QR code');
+      fallbackCopyText(config.data);
+    }
+  }
+
+  function fallbackCopyText(text) {
+    try {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      tempInput.style.position = 'fixed';
+      tempInput.style.opacity = '0';
+      document.body.appendChild(tempInput);
+      tempInput.focus();
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast('QR Content copied to clipboard!');
+    } catch (e) {
+      showToast('Copy not supported on this browser');
     }
   }
 
@@ -369,16 +389,26 @@
   }
 
   function setupTheme() {
-    const savedTheme = localStorage.getItem('qr-theme') || 'light';
+    let savedTheme = 'light';
+    try {
+      savedTheme = localStorage.getItem('qr-theme') || 'light';
+    } catch (e) {
+      savedTheme = 'light';
+    }
+
     document.documentElement.setAttribute('data-theme', savedTheme);
     if (themeToggleBtn) {
-      themeToggleBtn.querySelector('i').className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      const icon = themeToggleBtn.querySelector('i');
+      if (icon) icon.className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+
       themeToggleBtn.addEventListener('click', () => {
         const cur = document.documentElement.getAttribute('data-theme') || 'light';
         const next = cur === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('qr-theme', next);
-        themeToggleBtn.querySelector('i').className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        try {
+          localStorage.setItem('qr-theme', next);
+        } catch (e) {}
+        if (icon) icon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
       });
     }
   }
